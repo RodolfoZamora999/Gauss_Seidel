@@ -1,0 +1,9 @@
+C:\Users\rodol\source\repos\Gauss_Seidel\Gauss_Seidel\bin\Debug\Gauss_Seidel.exe.config
+C:\Users\rodol\source\repos\Gauss_Seidel\Gauss_Seidel\bin\Debug\Gauss_Seidel.exe
+C:\Users\rodol\source\repos\Gauss_Seidel\Gauss_Seidel\bin\Debug\Gauss_Seidel.pdb
+C:\Users\rodol\source\repos\Gauss_Seidel\Gauss_Seidel\obj\Debug\Gauss_Seidel.csprojAssemblyReference.cache
+C:\Users\rodol\source\repos\Gauss_Seidel\Gauss_Seidel\obj\Debug\Gauss_Seidel.Form1.resources
+C:\Users\rodol\source\repos\Gauss_Seidel\Gauss_Seidel\obj\Debug\Gauss_Seidel.Properties.Resources.resources
+C:\Users\rodol\source\repos\Gauss_Seidel\Gauss_Seidel\obj\Debug\Gauss_Seidel.csproj.GenerateResource.cache
+C:\Users\rodol\source\repos\Gauss_Seidel\Gauss_Seidel\obj\Debug\Gauss_Seidel.exe
+C:\Users\rodol\source\repos\Gauss_Seidel\Gauss_Seidel\obj\Debug\Gauss_Seidel.pdb

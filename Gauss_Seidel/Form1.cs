@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace Gauss_Seidel
 {
     public partial class Form1 : Form
     {
-        private TextBox[,] matrizValores;
-        private TextBox[] matrizIgual;
-
-        //Este arreglo almacena todos los valores
+        //Esta matriz almacena los valores de "x" calculados.
         private double[] valoresX;
+        private ArrayDynamic arrayDynamic;
 
         public Form1()
         {
             InitializeComponent();
             this.btnIteracion.Enabled = false;
-
         }
 
         //Evento para el botón de "Aceptar"
@@ -33,8 +29,10 @@ namespace Gauss_Seidel
                 //Todos los valores se igualan a 0
                 for (int i = 0; i < this.valoresX.Length; i++)
                     this.valoresX[i] = 0;
-                
-                Crear_Matriz(int.Parse(this.txDimension.Text));
+
+                //Creación de la matriz de TextBoxs
+                this.arrayDynamic = new ArrayDynamic(this.panelMatriz);
+                this.arrayDynamic.Crear_Matriz(int.Parse(this.txDimension.Text));
 
                 Crear_Columnas(int.Parse(this.txDimension.Text));
 
@@ -48,73 +46,9 @@ namespace Gauss_Seidel
 
         }
 
-       //Método para crear la matriz dinamica de TextBox's
-        private void Crear_Matriz(int dimension)
-        {
-            if (dimension > 1)
-            {
-                this.matrizValores = new TextBox[dimension, dimension];
-                this.matrizIgual = new TextBox[dimension];
-
-
-                for (int i = 0; i < dimension; i++)
-                {
-                    for (int j = 0; j < dimension; j++)
-                    {
-                        this.matrizValores[i, j] = new TextBox()
-                        {
-                            Size = new Size(28, 28),
-                            Location = new Point((j + 1) * 60, (i + 1) * 40),
-                            Multiline = true,
-                            TextAlign = HorizontalAlignment.Center
-                        };
-
-                        this.panelMatriz.Controls.Add(this.matrizValores[i, j]);
-
-                        Label lblX = new Label()
-                        {
-                            Size = new Size(28, 28),
-                            Location = new Point((matrizValores[i, j].Location.X) + 25, ((i + 1) * 40)),
-                            Text = "X" + (j + 1),
-                            ForeColor = Color.White,
-                            TextAlign = ContentAlignment.MiddleCenter
-                        };
-
-                        this.panelMatriz.Controls.Add(lblX);
-                    }
-
-                    //Agrega los cuadros para las "igualaciones"
-
-                    Label lblIgual = new Label()
-                    {
-                        Size = new Size(28, 28),
-                        Location = new Point((matrizValores[i, (dimension - 1)].Location.X) + 50, ((i + 1) * 40)),
-                        Text = "=",
-                        ForeColor = Color.White,
-                        TextAlign = ContentAlignment.MiddleCenter
-                    };
-
-                    this.matrizIgual[i] = new TextBox() 
-                    {
-                        Size = new Size(28, 28),
-                        Location = new Point((matrizValores[i, (dimension - 1)].Location.X) + 80, ((i + 1) * 40)),
-                        Multiline = true
-                    };
-
-                    this.panelMatriz.Controls.Add(lblIgual);
-                    this.panelMatriz.Controls.Add(this.matrizIgual[i]);
-
-                }
-
-            }
-            else
-                MessageBox.Show("Value > 1");
-        }
-
         //Método que se encarga de crear la lista donde se desplegaran los resultados
         private void Crear_Columnas(int variables)
         {
-        
             ColumnHeader[] columnas = new ColumnHeader[(variables * 2)];
 
             this.listaResultado.Columns.Add(new ColumnHeader() {Text = "#Iteración", Width = 90 });
@@ -139,23 +73,12 @@ namespace Gauss_Seidel
 
                 n++;
             }
-
             this.listaResultado.Columns.AddRange(columnas);
-
-        }
-
-        //Método que se encarga de limpiar toda la interfaz grafica
-        private void Limpiar()
-        {
-            this.listaResultado.Columns.Clear();
-            this.listaResultado.Items.Clear();
-            this.panelMatriz.Controls.Clear();
         }
 
         //Método para empezar con la iteración del programa 
         private void Clic_Iniciar_Iteracion(object sender, EventArgs e)
         {
-
             this.listaResultado.Items.Clear();
 
             //Limite 
@@ -163,37 +86,15 @@ namespace Gauss_Seidel
 
             //Toleranciad error
             double tolerancia = double.Parse(this.txtTolerancia.Text);
-
-
-            //Dimensión de la matriz
-            int dimension = int.Parse(this.txDimension.Text);
-
-            //Array con los valores
-            double[,] matrizValoresTemp = new double[dimension, dimension];
-
-            //Esta parte de código sirve para pasar los valores de los cuadros a una matriz
-            for (int i = 0; i < dimension; i++)
-                for (int j = 0; j < dimension; j++)
-                    matrizValoresTemp[i, j] = double.Parse(this.matrizValores[i, j].Text);
-
-            //Por otra parte, aquí se almacenan los valores de las igualaciones "m = n"
-            double[] matrizIgulacionTemp = new double[dimension];
-
-            for (int i = 0; i < dimension; i++)
-                matrizIgulacionTemp[i] = double.Parse(this.matrizIgual[i].Text);
-
-
-            if (ComprobarDiagonal(matrizValoresTemp))
-            {
-                //Método que se encarga de hacer las iteraciones
-                Calcular(matrizValoresTemp, matrizIgulacionTemp, limite, tolerancia);
-            }
+ 
+            if (ComprobarDiagonal(this.arrayDynamic.LeerIncognitas()))
+                AlgoritmoGauss_Seidel(this.arrayDynamic.LeerIncognitas(), this.arrayDynamic.LeerIgualaciones(), limite, tolerancia);
             else
                 MessageBox.Show("Comprobar diagonal, ¿Quieres?");
         }
 
         //Método para calcular las iteraciones 
-        public void Calcular(double[,] valores, double[] igualaciones, int limite, double tolerancia)
+        public void AlgoritmoGauss_Seidel(double[,] valores, double[] igualaciones, int limite, double tolerancia)
         {
             //Variables que guardan los xn anteriores
             double[] valoresXanteriores;
@@ -205,7 +106,6 @@ namespace Gauss_Seidel
             //Ciclo para hacer el numero de iteraciones
             for (int iterador = 1; iterador <= limite || limite == 0; iterador++)
             {
-
                 valoresImprimir[0] = iterador.ToString();
 
                 //Almacenar los valores
@@ -219,7 +119,6 @@ namespace Gauss_Seidel
 
                 this.listaResultado.Items.Add(new ListViewItem(valoresImprimir));
 
-
                 //Comprobar la tolerancia
                 for (int i = 0; i < this.valoresX.Length; i++)
                 {
@@ -230,7 +129,6 @@ namespace Gauss_Seidel
                         return;
                     }
                 }
-
 
                 //Se almacenan los valores en anteriores
                 valoresXanteriores = (double[])valoresX.Clone();
@@ -253,16 +151,13 @@ namespace Gauss_Seidel
                     //Almacena el resultado de los valores para X
                     this.valoresX[i] = (valorTemp / valores[i, i]);
                 }
-
             }
-
             //Por si alcanza el limite de iteraciones
             MessageBox.Show("La iteración ha sido exitosa por iteraciones");
         }
 
         public bool ComprobarDiagonal(double[,] matriz)
         {
-
             for (int i = 0; i < matriz.GetLength(0); i++)
             {
                 for (int j = 0; j < matriz.GetLength(0); j++)
@@ -271,7 +166,6 @@ namespace Gauss_Seidel
                     {
                         return false;
                     }
-
                 }
             }
             return true;
@@ -282,6 +176,13 @@ namespace Gauss_Seidel
         {
             return Math.Abs(((xnActual - xnAnterior) / xnActual) * 100); ;
         }
-       
+
+        //Método que se encarga de limpiar toda la interfaz grafica
+        private void Limpiar()
+        {
+            this.listaResultado.Columns.Clear();
+            this.listaResultado.Items.Clear();
+            this.panelMatriz.Controls.Clear();
+        }
     }
 }

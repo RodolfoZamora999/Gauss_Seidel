@@ -163,6 +163,7 @@ namespace Gauss_Seidel
         }
         public void AlgoritmoGauss_Simple(double[,] valores, double[]igualaciones, int limite, double tolerancia)
         {
+            //resolver
             for (int iterador = 1; iterador <= limite || limite == 0; iterador++)
             {
                 for (int k = 0; k < valoresX.Length - 1; k++)
@@ -178,6 +179,7 @@ namespace Gauss_Seidel
                     }
                 }
             }
+
         }
         public bool ComprobarDiagonal(double[,] matriz)
         {
@@ -217,6 +219,7 @@ namespace Gauss_Seidel
             msMenu.BackColor = Color.FromArgb(162, 215, 41);
             btnAceptar.BackColor = Color.FromArgb(162, 215, 41);
             btnIteracion.BackColor = Color.FromArgb(162, 215, 41);
+            lblX.BackColor = Color.FromArgb(162, 215, 41);
         }
 
         private void TsmiRojo_Click(object sender, EventArgs e)
@@ -224,6 +227,7 @@ namespace Gauss_Seidel
             msMenu.BackColor = Color.FromArgb(250, 130, 76);
             btnAceptar.BackColor = Color.FromArgb(250, 130, 76);
             btnIteracion.BackColor = Color.FromArgb(250, 130, 76);
+            lblX.BackColor = Color.FromArgb(250, 130, 76);
         }
 
         private void TsmiNegro_Click(object sender, EventArgs e)
@@ -231,6 +235,7 @@ namespace Gauss_Seidel
             msMenu.BackColor = Color.FromArgb(52, 46, 55);
             btnAceptar.BackColor = Color.FromArgb(52, 46, 55);
             btnIteracion.BackColor = Color.FromArgb(52, 46, 55);
+            lblX.BackColor = Color.FromArgb(52, 46, 55);
         }
 
         private void TsmiAzul_Click(object sender, EventArgs e)
@@ -238,6 +243,7 @@ namespace Gauss_Seidel
             msMenu.BackColor = Color.FromArgb(60, 145, 230);
             btnAceptar.BackColor = Color.FromArgb(60, 145, 230);
             btnIteracion.BackColor = Color.FromArgb(60, 145, 230);
+            lblX.BackColor = Color.FromArgb(60, 145, 230);
         }
 
         private void LblX_Click(object sender, EventArgs e)

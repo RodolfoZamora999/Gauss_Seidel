@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Gauss_Seidel
 {
-    public partial class Form1 : Form
+    public partial class frmMetodos : Form
     {
         //Esta matriz almacena los valores de "x" calculados.
         private double[] valoresX;
         private ArrayDynamic arrayDynamic;
 
-        public Form1()
+        public frmMetodos()
         {
             InitializeComponent();
             this.btnIteracion.Enabled = false;
@@ -22,7 +23,6 @@ namespace Gauss_Seidel
            try
             {
                 Limpiar();
-
                 //Inicializa el vector para guardar todos los valores de las x
                 this.valoresX = new double[int.Parse(this.txDimension.Text)];
 
@@ -88,7 +88,13 @@ namespace Gauss_Seidel
             double tolerancia = double.Parse(this.txtTolerancia.Text);
  
             if (ComprobarDiagonal(this.arrayDynamic.LeerIncognitas()))
-                AlgoritmoGauss_Seidel(this.arrayDynamic.LeerIncognitas(), this.arrayDynamic.LeerIgualaciones(), limite, tolerancia);
+            {
+                if(cbMetodo.SelectedIndex==0)
+                    AlgoritmoGauss_Seidel(this.arrayDynamic.LeerIncognitas(), this.arrayDynamic.LeerIgualaciones(), limite, tolerancia);
+                else if(cbMetodo.SelectedIndex==1)
+                    AlgoritmoGauss_Simple(this.arrayDynamic.LeerIncognitas(), this.arrayDynamic.LeerIgualaciones(), limite, tolerancia);
+            }
+
             else
                 MessageBox.Show("Comprobar diagonal, ¿Quieres?");
         }
@@ -155,7 +161,24 @@ namespace Gauss_Seidel
             //Por si alcanza el limite de iteraciones
             MessageBox.Show("La iteración ha sido exitosa por iteraciones");
         }
+        public void AlgoritmoGauss_Simple(double[,] valores, double[]igualaciones, int limite, double tolerancia)
+        {
+            for (int iterador = 1; iterador <= limite || limite == 0; iterador++)
+            {
+                for (int k = 0; k < valoresX.Length - 1; k++)
+                {
+                    for (int i = k + 1; i < valoresX.Length - 1; i++)
+                    {
+                        double factor = valores[i, k] / valores[k, k];
 
+                        for (int j = k; j <= valoresX.Length - 1; j++)
+                        {
+                            valores[i, j] = valores[i, j] - valores[k, j] * factor;
+                        }
+                    }
+                }
+            }
+        }
         public bool ComprobarDiagonal(double[,] matriz)
         {
             for (int i = 0; i < matriz.GetLength(0); i++)
@@ -183,6 +206,43 @@ namespace Gauss_Seidel
             this.listaResultado.Columns.Clear();
             this.listaResultado.Items.Clear();
             this.panelMatriz.Controls.Clear();
+        }
+
+        //Cambiar de color a componentes
+        //
+        // No personalizable porque escogen colores feos
+        //
+        private void TsmiVerde_Click(object sender, EventArgs e)
+        {
+            msMenu.BackColor = Color.FromArgb(162, 215, 41);
+            btnAceptar.BackColor = Color.FromArgb(162, 215, 41);
+            btnIteracion.BackColor = Color.FromArgb(162, 215, 41);
+        }
+
+        private void TsmiRojo_Click(object sender, EventArgs e)
+        {
+            msMenu.BackColor = Color.FromArgb(250, 130, 76);
+            btnAceptar.BackColor = Color.FromArgb(250, 130, 76);
+            btnIteracion.BackColor = Color.FromArgb(250, 130, 76);
+        }
+
+        private void TsmiNegro_Click(object sender, EventArgs e)
+        {
+            msMenu.BackColor = Color.FromArgb(52, 46, 55);
+            btnAceptar.BackColor = Color.FromArgb(52, 46, 55);
+            btnIteracion.BackColor = Color.FromArgb(52, 46, 55);
+        }
+
+        private void TsmiAzul_Click(object sender, EventArgs e)
+        {
+            msMenu.BackColor = Color.FromArgb(60, 145, 230);
+            btnAceptar.BackColor = Color.FromArgb(60, 145, 230);
+            btnIteracion.BackColor = Color.FromArgb(60, 145, 230);
+        }
+
+        private void LblX_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }
